@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grid Tactics Ver.1.0</title>
+    <link rel="stylesheet" href="style-v02.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section class="top-bar">
+        <div>
+          <p class="eyebrow">Web Edition Ver.1.0</p>
+          <h1>Grid Tactics</h1>
+        </div>
+        <nav class="main-nav" aria-label="画面切り替え">
+          <button type="button" data-screen-button="home">ホーム</button>
+          <button type="button" data-screen-button="battle">対戦</button>
+          <button type="button" data-screen-button="deckBuilder">デッキ編集</button>
+          <button type="button" data-screen-button="cardLibrary">カード一覧</button>
+        </nav>
+      </section>
+
+      <section id="homeScreen" class="screen home-screen">
+        <div class="home-hero">
+          <p class="eyebrow">グリッド・タクティクス</p>
+          <h2>Grid Tactics</h2>
+          <p class="home-tagline">前線を制し、覚醒の一手で戦局を変えろ。</p>
+          <div class="home-actions">
+            <button class="primary-action" type="button" data-home-action="battle">対戦する</button>
+            <button type="button" data-home-action="deckBuilder">デッキ編集</button>
+            <button type="button" data-home-action="cardLibrary">カード一覧</button>
+          </div>
+        </div>
+        <button id="howToButton" class="home-help-button" type="button" aria-label="遊び方">?</button>
+
+      </section>
+
+      <section id="battleScreen" class="screen battle-screen">
+        <button id="battleMenuButton" class="battle-menu-button" type="button" aria-label="メニューを開く" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <section class="battle-top-row">
+          <section class="combatant-panel enemy-status">
+            <span id="enemyClassIcon" class="class-icon class-icon-fallback"></span>
+            <button id="enemyHero" class="hero hero-enemy" type="button">
+              <span id="enemyName">CPU</span>
+              <strong id="enemyHp">20</strong>
+            </button>
+            <div class="resource primary-resource">
+              <span>コスト</span>
+              <strong id="enemyCost">0/0</strong>
+            </div>
+            <div class="resource">
+              <span>手札</span>
+              <strong id="enemyHandCount">0</strong>
+            </div>
+            <div class="resource">
+              <span>デッキ</span>
+              <strong id="enemyDeckCount">30</strong>
+            </div>
+          </section>
+
+          <div class="battle-controls">
+            <span id="turnLabel" class="turn-label">準備中</span>
+          </div>
+        </section>
+
+        <section class="battle-layout">
+          <div class="battle-main">
+            <section class="board-wrap" aria-label="盤面">
+              <div class="side-label">CPU 後列 / 前列</div>
+              <div id="enemyBoard" class="board enemy-board"></div>
+              <div class="lane-rule"></div>
+              <div id="playerBoard" class="board player-board"></div>
+              <div class="side-label">PLAYER 前列 / 後列</div>
+            </section>
+
+            <section class="combatant-panel player-status">
+              <span id="playerClassIcon" class="class-icon class-icon-fallback"></span>
+              <button id="playerHero" class="hero hero-player" type="button">
+                <span id="playerName">PLAYER</span>
+                <strong id="playerHp">20</strong>
+              </button>
+              <div class="resource primary-resource">
+                <span>コスト</span>
+                <strong id="playerCost">0/0</strong>
+              </div>
+              <div class="resource">
+                <span>覚醒</span>
+                <strong id="playerAwaken">2</strong>
+              </div>
+              <div class="resource">
+                <span>デッキ</span>
+                <strong id="playerDeckCount">30</strong>
+              </div>
+              <button id="awakenButton" type="button">覚醒</button>
+              <button id="endTurnButton" class="end-turn-button" type="button">ターン終了</button>
+            </section>
+
+            <section class="field-row">
+              <div class="field-slot">
+                <span>CPUフィールド</span>
+                <strong id="enemyField">なし</strong>
+              </div>
+              <div class="field-slot">
+                <span>自分フィールド</span>
+                <strong id="playerField">なし</strong>
+              </div>
+            </section>
+          </div>
+
+          <aside class="preview-panel" aria-label="カード詳細">
+            <h2>カード詳細</h2>
+            <div id="cardPreview" class="card-preview empty-preview"></div>
+          </aside>
+        </section>
+
+        <section class="zones">
+          <div class="hand-panel">
+            <h2>手札</h2>
+            <div id="hand" class="card-row"></div>
+          </div>
+          <button id="extraZone" class="extra-summary" type="button"></button>
+        </section>
+
+        <details class="log-panel">
+          <summary>バトルログ</summary>
+          <ol id="battleLog"></ol>
+        </details>
+      </section>
+
+      <section id="deckBuilderScreen" class="screen deck-builder-screen">
+        <section class="builder-header">
+          <div>
+            <p class="eyebrow">Deck Builder</p>
+            <h2>デッキ編集</h2>
+            <p>ナイトかメイジを選び、共通カードのニュートラルを組み合わせてデッキを作成します。</p>
+          </div>
+          <div class="builder-actions">
+            <strong id="deckCount">0 / 30</strong>
+            <button id="saveDeckButton" type="button">保存</button>
+            <button id="playWithDeckButton" class="primary-action" type="button">このデッキで対戦する</button>
+            <button id="resetDeckButton" type="button">初期デッキに戻す</button>
+          </div>
+        </section>
+        <section class="deck-class-row">
+          <label>
+            使用クラス
+            <select id="deckClassSelect"></select>
+          </label>
+          <span id="deckClassIcon" class="class-icon class-icon-fallback"></span>
+          <p>ニュートラルは独立クラスではなく、両クラスで使える共通カードです。</p>
+        </section>
+        <section class="builder-tabs" aria-label="デッキ編集切り替え">
+          <button id="mainDeckTab" type="button" data-builder-tab="main">通常デッキ</button>
+          <button id="extraDeckTab" type="button" data-builder-tab="extra">エクストラデッキ</button>
+        </section>
+        <p id="deckMessage" class="deck-message"></p>
+        <div class="builder-layout">
+          <section>
+            <div class="filter-bar">
+              <input id="deckSearchInput" type="search" placeholder="カード名・能力で検索" />
+              <select id="deckTypeFilter"></select>
+              <select id="deckClassFilter"></select>
+              <select id="deckImageFilter"></select>
+              <select id="deckTribeFilter"></select>
+              <select id="deckRarityFilter"></select>
+              <select id="deckCostFilter"></select>
+            </div>
+            <div id="deckCardPool" class="collection-grid"></div>
+          </section>
+          <aside class="deck-list-panel">
+            <h2>現在のデッキ</h2>
+            <div id="deckList" class="deck-list"></div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="cardLibraryScreen" class="screen card-library-screen">
+        <section class="library-header">
+          <div>
+            <p class="eyebrow">Card Library</p>
+            <h2>カード一覧</h2>
+            <p>ニュートラルはナイト/メイジ両方のデッキで使える共通カードです。</p>
+          </div>
+          <div class="filter-bar">
+            <input id="librarySearchInput" type="search" placeholder="カード名・能力で検索" />
+            <select id="libraryTypeFilter"></select>
+            <select id="libraryClassFilter"></select>
+            <select id="libraryImageFilter"></select>
+            <select id="libraryTribeFilter"></select>
+            <select id="libraryRarityFilter"></select>
+            <select id="libraryCostFilter"></select>
+          </div>
+        </section>
+        <div id="cardLibraryGrid" class="collection-grid"></div>
+      </section>
+    </main>
+
+    <div id="battleMenuOverlay" class="battle-menu-overlay" hidden></div>
+    <aside id="battleSideMenu" class="battle-side-menu" aria-hidden="true" aria-label="バトルメニュー">
+      <div class="battle-side-head">
+        <div>
+          <p class="eyebrow">Battle Menu</p>
+          <h2>Grid Tactics</h2>
+        </div>
+        <button id="closeBattleMenuButton" type="button" aria-label="メニューを閉じる">×</button>
+      </div>
+      <nav class="battle-side-actions">
+        <button id="battleHomeButton" type="button">ホームへ戻る</button>
+        <button id="menuDeckButton" type="button">デッキ編集</button>
+        <button id="menuLibraryButton" type="button">カード一覧</button>
+        <button id="menuHowToButton" type="button">遊び方</button>
+        <button id="newGameButton" type="button">再戦</button>
+        <button id="menuRetireButton" class="danger-action" type="button">リタイア</button>
+      </nav>
+    </aside>
+
+    <div id="extraModal" class="modal-backdrop" hidden>
+      <section class="extra-modal" role="dialog" aria-modal="true" aria-labelledby="extraModalTitle">
+        <div class="modal-head">
+          <h2 id="extraModalTitle">エクストラデッキ</h2>
+          <button id="closeExtraModalButton" type="button">閉じる</button>
+        </div>
+        <div id="extraModalList" class="extra-modal-list"></div>
+      </section>
+    </div>
+
+    <div id="resultModal" class="modal-backdrop" hidden>
+      <section class="result-modal" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <p id="resultSubTitle" class="eyebrow">Battle Result</p>
+        <h2 id="resultTitle">VICTORY</h2>
+        <p id="resultReason">勝負が決まりました。</p>
+        <div class="result-actions">
+          <button id="rematchButton" class="primary-action" type="button">もう一度対戦</button>
+          <button id="resultHomeButton" type="button">ホームへ戻る</button>
+          <button id="resultDeckButton" type="button">デッキ編集へ</button>
+          <button id="resultLibraryButton" type="button">カード一覧へ</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="howToModal" class="modal-backdrop" hidden>
+      <section class="howto-modal" role="dialog" aria-modal="true" aria-labelledby="howToTitle">
+        <div class="modal-head">
+          <h2 id="howToTitle">遊び方</h2>
+          <button id="closeHowToButton" type="button">閉じる</button>
+        </div>
+        <ul>
+          <li>カードをクリックして使用します。</li>
+          <li>ユニットは空きマスを選んで召喚します。</li>
+          <li>攻撃可能なユニットを選び、攻撃対象を選択します。</li>
+          <li>前列がすべて埋まっている場合、相手プレイヤーへ直接攻撃できません。</li>
+          <li>前にユニットがいる後列ユニットは攻撃対象になりません。</li>
+          <li>条件を満たすとエクストラカードを使用できます。</li>
+          <li>覚醒でユニットを強化できます。</li>
+        </ul>
+      </section>
+    </div>
+
+    <div id="effectLayer" class="effect-layer" aria-hidden="true"></div>
+    <div id="hoverPreview" class="hover-preview" hidden></div>
+
+    <script src="cards-v02.js"></script>
+    <script src="main-v02.js"></script>
+  </body>
+</html>
